@@ -29,32 +29,16 @@ exports.handler = (event, context, callback) => {
                 ]
             });
 
-            var slack = https.request(
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-type": "application/json"
-                    },
-                    host: "hooks.slack.com",
-                    path: event.path
+            var slackOptions = {
+                url: `https://hooks.slack.com${event.path}`,
+                headers: {
+                    "Content-type": "application/json"
                 },
-                (response) =>{
-                    response.setEncoding('utf8');
-                    response.on('data', (chunk) => {
-                        console.log(`BODY: ${chunk}`);
-                    });
-                    response.on('end', () => {
-                        console.log('No more data in response.');
-                    });
-                }
-            );
-
-            slack.on('error', (e) => {
-                console.log(`problem with request: ${e.message}`);
+                form: data
+            };
+            request.post(slackOptions, (error, response, body) => {
+                console.log(body);
             });
-
-            slack.write(data);
-            slack.end();
         });
     });
     callback(null, 'hoge');  // Echo back the first key value
