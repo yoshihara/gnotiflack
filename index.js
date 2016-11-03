@@ -1,7 +1,6 @@
 'use strict';
 
 const https = require('https');
-const querystring = require('querystring');
 
 console.log('Loading function');
 
