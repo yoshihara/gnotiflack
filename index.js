@@ -18,7 +18,7 @@ exports.handler = (event, context, callback) => {
     }
 
     var slackOptions = {
-        url: `https://hooks.slack.com${event.path}`,
+        url: event.incomingWebhook,
         headers: {
             'Content-type': 'application/json'
         }
