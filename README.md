@@ -14,4 +14,4 @@ npm install
 npm run zip
 ```
 
-Upload `gnotiflack.zip` in AWS Lamubda console.
+Upload `gnotiflack.zip` in AWS Lambda console.
