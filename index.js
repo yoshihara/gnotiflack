@@ -2,13 +2,12 @@
 
 const https = require('https');
 const request = require('request');
+const async = require('async');
+const _ = require('lodash');
 
 console.log('Loading function');
 
 exports.handler = (event, context, callback) => {
-    var token = event.token;
-    var body = '';
-
     var githubOptions = {
         url: 'https://api.github.com/notifications',
         headers: {
@@ -25,21 +24,42 @@ exports.handler = (event, context, callback) => {
         }
     };
 
-    request(githubOptions, (error, response, body) => {
-        JSON.parse(body).forEach((notification) => {
-            var data = JSON.stringify({
-                'attachments': [
-                    {
-                        'title': notification.subject.title,
-                        'text': notification.subject.url.replace(/api\./, '').replace(/repos\//, '')
-                    }
-                ]
-            });
+    async.waterfall([
+        function(callback) {
+            request(githubOptions, (error, response, body) => {
+                callback(null, body)
+            })
+        },
 
-            request.post(slackOptions, (error, response, body) => {
-                console.log(body);
-            }).form(data);
-        });
+        function(body, callback) {
+            async.each(JSON.parse(body), (notification, slackCallback) => {
+                var data = JSON.stringify({
+                    'attachments': [
+                        {
+                            'title': notification.subject.title,
+                            'text': notification.subject.url.replace(/api\./, '').replace(/repos\//, '')
+                        }
+                    ]
+                });
+
+                request.post(slackOptions, (error, response, body) => {
+                    console.log(body);
+                    slackCallback();
+                }).form(data);
+
+            }, (err) => {
+                if (err) {
+                    console.log('Fail slack posting.')
+                } else {
+                    callback('');
+                }
+            });
+        }
+    ], (err, result) => {
+        if (err) {
+            console.log(`Fail ${err}.`)
+        } else {
+            callback(null, 'succeeded');
+        }
     });
-    callback(null, 'hoge');  // Echo back the first key value
 };
