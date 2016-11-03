@@ -33,7 +33,7 @@ exports.handler = (event, context, callback) => {
 
         function(body, callback) {
             async.each(JSON.parse(body), (notification, slackCallback) => {
-                var data = JSON.stringify({
+                var message = JSON.stringify({
                     'attachments': [
                         {
                             'title': notification.subject.title,
@@ -45,7 +45,7 @@ exports.handler = (event, context, callback) => {
                 request.post(slackOptions, (error, response, body) => {
                     console.log(body);
                     slackCallback();
-                }).form(data);
+                }).form(message);
 
             }, (err) => {
                 if (err) {
