@@ -55,7 +55,7 @@ exports.handler = (event, context, callback) => {
                 }
             });
         }
-    ], (err, result) => {
+    ], (result, err) => {
         if (err) {
             console.log(`Fail ${err}.`)
         } else {
