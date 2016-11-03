@@ -12,7 +12,7 @@ exports.handler = (event, context, callback) => {
         url: 'https://api.github.com/notifications',
         headers: {
             'Content-type': 'application/json',
-            'User-Agent': 'Awesome-Octocat-App',
+            'User-Agent': 'notiflack-Bot',
             'Authorization': `token ${event.token}`
         }
     }
