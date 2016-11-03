@@ -18,6 +18,13 @@ exports.handler = (event, context, callback) => {
         }
     }
 
+    var slackOptions = {
+        url: `https://hooks.slack.com${event.path}`,
+        headers: {
+            "Content-type": "application/json"
+        }
+    };
+
     request(githubOptions, (error, response, body) => {
         JSON.parse(body).forEach((notification) => {
             var data = JSON.stringify({
@@ -29,16 +36,9 @@ exports.handler = (event, context, callback) => {
                 ]
             });
 
-            var slackOptions = {
-                url: `https://hooks.slack.com${event.path}`,
-                headers: {
-                    "Content-type": "application/json"
-                },
-                form: data
-            };
             request.post(slackOptions, (error, response, body) => {
                 console.log(body);
-            });
+            }).form(data);
         });
     });
     callback(null, 'hoge');  // Echo back the first key value
