@@ -1,11 +1,11 @@
 {
-  "name": "notifslack",
+  "name": "gnotiflack",
   "version": "1.0.0",
   "description": "notify GitHub notifications to slack",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "zip": "zip -r notifslack.zip index.js node_modules/"
+    "zip": "zip -r gnotiflack.zip index.js node_modules/"
   },
   "author": "Haruka Yoshihara",
   "license": "MIT",
