@@ -25,13 +25,13 @@ exports.handler = (event, context, callback) => {
     };
 
     async.waterfall([
-        function(callback) {
+        function(githubCallback) {
             request(githubOptions, (error, response, body) => {
-                callback(null, body)
+                githubCallback(null, body)
             })
         },
 
-        function(body, callback) {
+        function(body, githubCallback) {
             async.each(JSON.parse(body), (notification, slackCallback) => {
                 var message = JSON.stringify({
                     'attachments': [
@@ -51,7 +51,7 @@ exports.handler = (event, context, callback) => {
                 if (err) {
                     console.log('Fail slack posting.')
                 } else {
-                    callback('');
+                    githubCallback('succeeded');
                 }
             });
         }
@@ -59,7 +59,7 @@ exports.handler = (event, context, callback) => {
         if (err) {
             console.log(`Fail ${err}.`)
         } else {
-            callback(null, 'succeeded');
+            callback(null, result);
         }
     });
 };
