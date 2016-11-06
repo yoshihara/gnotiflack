@@ -37,7 +37,7 @@ exports.handler = (event, context, callback) => {
                     'attachments': [
                         {
                             'title': notification.subject.title,
-                            'text': notification.subject.url.replace(/api\./, '').replace(/repos\//, '')
+                            'text': notification.subject.url.replace(/api\./, '').replace(/repos\//, '').replace(/pulls\//, 'pull/')
                         }
                     ]
                 });
