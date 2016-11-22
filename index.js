@@ -15,7 +15,7 @@ exports.handler = (event, context, callback) => {
             'User-Agent': 'gnotiflack-Bot',
             'Authorization': `token ${event.token}`
         }
-    }
+    };
 
     var slackOptions = {
         url: event.incomingWebhook,
