@@ -32,28 +32,24 @@ exports.handler = (event, context, callback) => {
         },
 
         function(body, githubCallback) {
-            async.each(JSON.parse(body), (notification, slackCallback) => {
-                var message = JSON.stringify({
-                    'attachments': [
-                        {
-                            'title': notification.subject.title,
-                            'text': notification.subject.url.replace(/api\./, '').replace(/repos\//, '').replace(/pulls\//, 'pull/')
-                        }
-                    ]
-                });
+            var notifications = _.map(JSON.parse(body), (notification) => {
+                let title = notification.subject.title;
+                let url = notification.subject.url;
+                let convertedUrl = url.replace(/api\./, '').replace(/repos\//, '').replace(/pulls\//, 'pull/');
 
-                request.post(slackOptions, (error, response, body) => {
-                    console.log(body);
-                    slackCallback();
-                }).form(message);
-
-            }, (err) => {
-                if (err) {
-                    console.log('Fail slack posting.')
-                } else {
-                    githubCallback('succeeded');
-                }
+                return {'title': title, 'text': convertedUrl, 'mrkdwn': 'text'};
             });
+
+
+            var message = JSON.stringify({
+                'text': `${notifications.length} notifications :point_right: https://github.com/notifications`,
+                'attachments': notifications
+            });
+
+            request.post(slackOptions, (error, response, body) => {
+                githubCallback(body, error)
+            }).form(message);
+
         }
     ], (result, err) => {
         if (err) {
